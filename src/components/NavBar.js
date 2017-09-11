@@ -14,6 +14,10 @@ import Divider from 'material-ui/Divider';
 import InboxIcon from 'material-ui-icons/Inbox';
 import DraftsIcon from 'material-ui-icons/Drafts';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import { Route, Switch } from 'react-router'
+import LoginScreen from '../screens/login/LoginScreen';
+import TicketListScreen from '../screens/ticket-list/TicketListScreen';
+import { push, replace } from 'react-router-redux'
 const drawerWidth = 240;
 const styles = theme => ({
   root: {
@@ -116,6 +120,7 @@ class NavBar extends Component {
     this.setState({ open: false });
   };
   render(){
+    console.log(this.props.store);
     const { classes } = this.props;
     return(
         <div className={classes.root}>
@@ -150,13 +155,29 @@ class NavBar extends Component {
                 </div>
                 <Divider />
                 <List className={classes.list}>
-                  <ListItem button>
+                  <ListItem button onClick={()=>{
+                    try{
+                      if(this.props.store.getState().routing.location.pathname != '/home/'){
+                        this.props.store.dispatch(push('/home/'))
+                      }
+                    }catch(e){
+                      this.props.store.dispatch(push('/home/'))
+                    }
+                  }}>
                     <ListItemIcon>
                       <InboxIcon />
                     </ListItemIcon>
                     <ListItemText primary="Inbox" />
                   </ListItem>
-                  <ListItem button>
+                  <ListItem button onClick={()=>{
+                    try{
+                      if(this.props.store.getState().routing.location.pathname != '/home/tickets'){
+                        this.props.store.dispatch(push('/home/tickets'))
+                      }
+                    }catch(e){
+                      this.props.store.dispatch(push('/home/tickets'))
+                    }
+                  }}>
                     <ListItemIcon>
                       <DraftsIcon />
                     </ListItemIcon>
@@ -166,7 +187,10 @@ class NavBar extends Component {
               </div>
             </Drawer>
               <div className={classNames(classes.content, this.state.open && classes.contentShift)}>
-                {this.props.children}
+                <Switch>
+                  <Route exact path="/home" component={LoginScreen}/>
+                  <Route exact path="/home/tickets" component={TicketListScreen}/>
+                </Switch>
               </div>
             </div>
         </div>
