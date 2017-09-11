@@ -167,7 +167,7 @@ class NavBar extends Component {
               </div>
             </Drawer>
               <div className={classNames(classes.content, this.state.open && classes.contentShift)}>
-                <LoginScreen/>
+                {this.props.children}
               </div>
             </div>
         </div>

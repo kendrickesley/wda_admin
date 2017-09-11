@@ -6,7 +6,9 @@ import './App.css';
 class App extends Component {
   render() {
     return (
-      <NavBar/>
+      <NavBar>
+        <LoginScreen/>
+      </NavBar>
     );
   }
 }
