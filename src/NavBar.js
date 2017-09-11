@@ -11,7 +11,6 @@ import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import classNames from 'classnames';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
-import LoginScreen from './LoginScreen';
 import InboxIcon from 'material-ui-icons/Inbox';
 import DraftsIcon from 'material-ui-icons/Drafts';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
