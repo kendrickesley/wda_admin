@@ -10,7 +10,7 @@ import { Route, Switch } from 'react-router'
 
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 import LoginScreen from './screens/login/LoginScreen';
-//import reducers from './reducers' // Or wherever you keep your reducers
+import reducers from './redux/reducers' // Or wherever you keep your reducers
 
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createHistory()
@@ -21,6 +21,7 @@ const middleware = routerMiddleware(history)
 
 const store = createStore(
   combineReducers({
+    ...reducers,
     routing: routerReducer
   }),
   applyMiddleware(middleware)
@@ -36,7 +37,7 @@ class App extends Component {
         <div>
           <Switch>
           <Route exact path="/" component={LoginScreen}/>
-          <Route path="/home" component={() => <NavBar store={store}/>}/>
+          <Route path="/app" component={() => <NavBar store={store}/>}/>
           </Switch>
         </div>
       </ConnectedRouter>

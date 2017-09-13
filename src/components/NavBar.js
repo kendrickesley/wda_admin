@@ -6,18 +6,21 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
-import MenuIcon from 'material-ui-icons/Menu';
-import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import classNames from 'classnames';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
-import InboxIcon from 'material-ui-icons/Inbox';
-import DraftsIcon from 'material-ui-icons/Drafts';
+/* START: ICONS */
+import MenuIcon from 'material-ui-icons/Menu';
+import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
+import HomeIcon from 'material-ui-icons/Home';
+import ViewListIcon from 'material-ui-icons/ViewList';
+/* END: ICONS */
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { Route, Switch } from 'react-router'
-import LoginScreen from '../screens/login/LoginScreen';
+import HomeScreen from '../screens/home/HomeScreen';
 import TicketListScreen from '../screens/ticket-list/TicketListScreen';
 import { push, replace } from 'react-router-redux'
+import {ticketList as ticketListRoute, home as homeRoute} from '../routes';
 const drawerWidth = 240;
 const styles = theme => ({
   root: {
@@ -70,6 +73,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    backgroundColor: theme.palette.background.default,
     minHeight: '100vh',
   },
   drawerPaperClose: {
@@ -96,7 +100,7 @@ const styles = theme => ({
   content: {
     width: '100%',
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.white,
     padding: 24,
     height: 'calc(100% - 56px)',
     marginTop: 56,
@@ -105,6 +109,12 @@ const styles = theme => ({
       marginTop: 64,
     },
   },
+  activeList:{
+    backgroundColor: '#2196F3',
+  },
+  activeIcon:{
+    color:"#FFFFFF"
+  }
 });
 
 class NavBar extends Component {
@@ -119,8 +129,42 @@ class NavBar extends Component {
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
+
+  generateListItem = (route, name, icon, isHome = false) => {
+    const Icon = icon;
+    const { classes } = this.props;
+    const currentRoute = this.props.store.getState().routing.location.pathname;
+    var active = false;
+    if(isHome){
+      active = currentRoute == route || currentRoute == route + '/';
+    }else{
+      active = currentRoute.startsWith(route);
+    }
+    return (
+      <ListItem className={active ? classes.activeList : null} 
+      button 
+      onClick={()=>{
+        try{
+          if(currentRoute != route){
+            this.props.store.dispatch(push(route))
+          }
+        }catch(e){
+          this.props.store.dispatch(push(route))
+        }
+      }}>
+        <ListItemIcon>
+          <Icon className={active ? classes.activeIcon : null} />
+        </ListItemIcon>
+        <ListItemText 
+        classes={active ? {
+          text: classes.activeIcon
+        } : null}
+        primary={name} />
+      </ListItem>
+    )
+  }
+
   render(){
-    console.log(this.props.store);
     const { classes } = this.props;
     return(
         <div className={classes.root}>
@@ -136,7 +180,7 @@ class NavBar extends Component {
                   <Typography type="title" color="inherit" className={classes.flex} noWrap>
                   Title
                   </Typography>
-                  <Button color="contrast">Login</Button>
+                  <Button color="contrast">Logout</Button>
               </Toolbar>
             </AppBar>
             
@@ -155,41 +199,15 @@ class NavBar extends Component {
                 </div>
                 <Divider />
                 <List className={classes.list}>
-                  <ListItem button onClick={()=>{
-                    try{
-                      if(this.props.store.getState().routing.location.pathname != '/home/'){
-                        this.props.store.dispatch(push('/home/'))
-                      }
-                    }catch(e){
-                      this.props.store.dispatch(push('/home/'))
-                    }
-                  }}>
-                    <ListItemIcon>
-                      <InboxIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Inbox" />
-                  </ListItem>
-                  <ListItem button onClick={()=>{
-                    try{
-                      if(this.props.store.getState().routing.location.pathname != '/home/tickets'){
-                        this.props.store.dispatch(push('/home/tickets'))
-                      }
-                    }catch(e){
-                      this.props.store.dispatch(push('/home/tickets'))
-                    }
-                  }}>
-                    <ListItemIcon>
-                      <DraftsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Drafts" />
-                  </ListItem>
+                  {this.generateListItem(homeRoute, "Dashboard", HomeIcon, true)}
+                  {this.generateListItem(ticketListRoute, "Tickets", ViewListIcon)}
                 </List>
               </div>
             </Drawer>
               <div className={classNames(classes.content, this.state.open && classes.contentShift)}>
                 <Switch>
-                  <Route exact path="/home" component={LoginScreen}/>
-                  <Route exact path="/home/tickets" component={TicketListScreen}/>
+                  <Route exact path={homeRoute} component={HomeScreen}/>
+                  <Route exact path={ticketListRoute} component={TicketListScreen}/>
                 </Switch>
               </div>
             </div>
