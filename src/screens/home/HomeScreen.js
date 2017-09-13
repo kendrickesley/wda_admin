@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import TicketList from './TicketList'
+import Home from './Home'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -13,9 +13,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-const TicketListScreen = connect(
+const HomeScreen = connect(
   mapStateToProps,
   mapDispatchToProps
-)(TicketList)
+)(Home)
 
-export default TicketListScreen
+export default HomeScreen

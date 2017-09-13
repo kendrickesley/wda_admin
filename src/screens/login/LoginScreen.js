@@ -1,23 +1,24 @@
-import React, { Component } from 'react';
-import './LoginScreen.css';
+import { connect } from 'react-redux'
+import { login } from '../../redux/actions'
+import Login from './Login'
 
-class LoginScreen extends Component {
-  render() {
-    return (
-      <div className="App">
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        
-      </div>
-    );
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...state.login
   }
 }
 
-export default LoginScreen;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    googleClicked: () => {
+      dispatch(login.setLoading())
+    }
+  }
+}
+
+const LoginScreen = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login)
+
+export default LoginScreen
