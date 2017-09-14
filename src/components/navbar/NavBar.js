@@ -16,11 +16,11 @@ import HomeIcon from 'material-ui-icons/Home';
 import ViewListIcon from 'material-ui-icons/ViewList';
 /* END: ICONS */
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import { Route, Switch } from 'react-router'
-import HomeScreen from '../screens/home/HomeScreen';
-import TicketListScreen from '../screens/ticket-list/TicketListScreen';
+import { Route, Switch, Redirect } from 'react-router'
+import HomeScreen from '../../screens/home';
+import TicketListScreen from '../../screens/ticket-list';
 import { push, replace } from 'react-router-redux'
-import {ticketList as ticketListRoute, home as homeRoute} from '../routes';
+import {ticketList as ticketListRoute, home as homeRoute} from '../../routes';
 const drawerWidth = 240;
 const styles = theme => ({
   root: {
@@ -145,7 +145,7 @@ class NavBar extends Component {
       button 
       onClick={()=>{
         try{
-          if(currentRoute != route){
+          if(currentRoute !== route){
             this.props.store.dispatch(push(route))
           }
         }catch(e){
@@ -164,6 +164,13 @@ class NavBar extends Component {
     )
   }
 
+  checkAuth = ()=>{
+    if(this.props.user == null){
+      return false;
+    }
+    return true;
+  }
+
   render(){
     const { classes } = this.props;
     return(
@@ -180,7 +187,11 @@ class NavBar extends Component {
                   <Typography type="title" color="inherit" className={classes.flex} noWrap>
                   Title
                   </Typography>
-                  <Button color="contrast">Logout</Button>
+                  <Button
+                  onClick={()=>{
+                    this.props.logout()
+                  }}
+                   color="contrast">Logout</Button>
               </Toolbar>
             </AppBar>
             
@@ -206,8 +217,20 @@ class NavBar extends Component {
             </Drawer>
               <div className={classNames(classes.content, this.state.open && classes.contentShift)}>
                 <Switch>
-                  <Route exact path={homeRoute} component={HomeScreen}/>
-                  <Route exact path={ticketListRoute} component={TicketListScreen}/>
+                  <Route exact path={homeRoute} render={() => {
+                    if(this.checkAuth()){
+                      return <HomeScreen/>
+                    }else{
+                      return <Redirect to="/"/>
+                    }
+                    }}/>
+                  <Route exact path={ticketListRoute} render={() => {
+                    if(this.checkAuth()){
+                      return <TicketListScreen/>
+                    }else{
+                      return <Redirect to="/"/>
+                    }
+                    }}/>
                 </Switch>
               </div>
             </div>
