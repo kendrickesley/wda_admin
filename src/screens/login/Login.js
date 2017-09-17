@@ -54,6 +54,33 @@ class Login extends Component {
     super(props);
     console.log(props)
   }
+
+  renderLoginButton(classes){
+    return (
+      <Grid container spacing={24}>
+        <Grid item xs={12} md={6} className={classes.text_center}>
+          <Button
+              className={classes.googleButton}
+              onClick={this.props.googleClicked}
+              raised={true}
+          >
+          <Icon className={classes.icon + " fa fa-google-plus " + classes.button_icon}/>
+          Sign in with Google
+          </Button>
+        </Grid>
+        <Grid item xs={12} md={6} className={classes.text_center}>
+          <Button
+              className={classes.facebookButton}
+              onClick={()=>{}}
+              raised={true}
+          >
+          <Icon className={classes.icon + " fa fa-facebook " + classes.button_icon}/>
+          Sign in with Facebook
+          </Button>
+        </Grid>
+      </Grid>
+    )
+  }
   render() {
     const classes = this.props.classes;
     return (
@@ -64,28 +91,7 @@ class Login extends Component {
             </Grid> */}
             <Grid item md={2} lg={3}/>
             <Grid item xs={12} md={8} lg={6}>
-              <Grid container spacing={24}>
-                <Grid item xs={12} md={6} className={classes.text_center}>
-                  <Button
-                      className={classes.googleButton}
-                      onClick={this.props.googleClicked}
-                      raised={true}
-                  >
-                  <Icon className={classes.icon + " fa fa-google-plus " + classes.button_icon}/>
-                  Sign in with Google
-                  </Button>
-                </Grid>
-                <Grid item xs={12} md={6} className={classes.text_center}>
-                  <Button
-                      className={classes.facebookButton}
-                      onClick={()=>{}}
-                      raised={true}
-                  >
-                  <Icon className={classes.icon + " fa fa-facebook " + classes.button_icon}/>
-                  Sign in with Facebook
-                  </Button>
-                </Grid>
-              </Grid>
+              {this.props.loading ? null : this.renderLoginButton(classes)}
             </Grid>  
           </Grid>
       </div>

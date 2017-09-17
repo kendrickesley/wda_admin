@@ -10,7 +10,8 @@ import { ConnectedRouter, routerReducer, routerMiddleware, replace } from 'react
 import LoginScreen from './screens/login';
 import reducers from './redux/reducers' // Or wherever you keep your reducers
 import {db as fireDB, auth} from './firebase';
-import {auth as reduxAuth} from './redux/actions';
+import thunk from 'redux-thunk';
+import {auth as reduxAuth, login as reduxLogin} from './redux/actions';
 import {ticketList as ticketListRoute, 
   home as homeRoute, 
   login as loginRoute} from './routes';
@@ -26,7 +27,7 @@ const store = createStore(
     ...reducers,
     routing: routerReducer
   }),
-  applyMiddleware(middleware)
+  applyMiddleware(thunk, middleware)
 )
 
 // Create an enhanced history that syncs navigation events with the store
@@ -44,8 +45,11 @@ class App extends Component {
         fireDB.ref('/admins/'+user.email.replace(/\./g, '%2E')).once('value', (snapshot) => {
           const val = snapshot.val();
           console.log(val);
-          store.dispatch(reduxAuth.setPosition(val.position));
-          store.dispatch(replace(homeRoute))
+          if(val && (val.position == 'hr' || val.position == 'technician')){
+            store.dispatch(reduxAuth.setPosition(val.position));
+            store.dispatch(reduxLogin.setLoading(false));
+            store.dispatch(replace(homeRoute))
+          }
         })
       } else {
         console.log('logged out');

@@ -11,14 +11,12 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     googleClicked: () => {
-      dispatch(login.setLoading())
+      dispatch(login.setLoading(true))
       const result = auth().signInWithRedirect(google_provider)
-      dispatch(login.setLoading())
     },
     facebookClicked: () => {
-      dispatch(login.setLoading())
+      dispatch(login.setLoading(true))
       const result = auth().signInWithRedirect(fb_provider)
-      dispatch(login.setLoading())
     }
   }
 }

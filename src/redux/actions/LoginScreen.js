@@ -1,5 +1,6 @@
-const setLoading = ()=>({
-    type: 'SET_LOADING'
+const setLoading = (loading)=>({
+    type: 'SET_LOADING',
+    loading: loading
 })
 
 export default {
