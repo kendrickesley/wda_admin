@@ -56,14 +56,16 @@ class TicketList extends Component {
     })
   }
 
-  renderTechniciansOptions(data, classes){
+  renderTechniciansOptions(data, classes, ticket_index){
     return (
       <form className={classes.container} autoComplete="off">
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor={data.tid + '-ticket-assigned'}>Technician</InputLabel>
         <Select
           value={data.technical_email || ''}
-          onChange={()=>{}}
+          onChange={(e)=>{
+            this.props.changeTechnician(e.target.value, ticket_index);
+          }}
           input={<Input id={data.tid + '-ticket-assigned'} />}
         >
           <MenuItem value="">
@@ -78,7 +80,7 @@ class TicketList extends Component {
     )
   }
 
-  renderTable(item, classes){
+  renderTable(item, classes, ticket_index){
     return (
       <TableRow key={item.tid}>
         <TableCell><span>{item.ticket_id}</span></TableCell>
@@ -86,7 +88,7 @@ class TicketList extends Component {
         <TableCell><span>{item.email}</span></TableCell>
         <TableCell><span>{item.software_issue}</span></TableCell>
         <TableCell><span>{item.statuses[0].status || 'Pending'}</span></TableCell>
-        <TableCell>{this.renderTechniciansOptions(item, classes)}</TableCell>
+        <TableCell>{this.renderTechniciansOptions(item, classes, ticket_index)}</TableCell>
         <TableCell>Priority</TableCell>
         <TableCell>Escalation Level</TableCell>
       </TableRow>
@@ -113,9 +115,9 @@ class TicketList extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {this.props.tickets.map(data=>{
-                return this.renderTable(data, classes)
-              })}
+            {this.props.tickets.map((data, index)=>{
+              return this.renderTable(data, classes, index)
+            })}
             </TableBody>
           </Table>
         }

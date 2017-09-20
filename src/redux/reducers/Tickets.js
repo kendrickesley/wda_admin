@@ -36,6 +36,21 @@ export default (state = default_state, action) => {
                 ...state,
                 technicians: action.technicians
             }
+        case 'CHANGE_TECHNICIAN':
+            let tempTickets = state.tickets.map((item, index)=>{
+                if(index !== action.index){
+                    return item
+                }
+
+                return {
+                    ...item,
+                    technician_email: action.technician
+                }
+            })
+            return {
+                ...state,
+                tickets: [...tempTickets]
+            }
         default:
             return state
     }
