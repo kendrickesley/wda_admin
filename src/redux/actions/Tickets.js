@@ -27,11 +27,18 @@ const setTechnicians = (technicians) => ({
     technicians: technicians
 })
 
+const changeTecnhician = (technician, index) => ({
+    type: 'CHANGE_TECHNICIAN',
+    technician,
+    index
+})
+
 export default {
     setTickets,
     pushTicket,
     clearTickets,
     setLoading,
     setSuccess,
-    setTechnicians
+    setTechnicians,
+    changeTecnhician
 }
