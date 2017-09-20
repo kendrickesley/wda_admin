@@ -47,14 +47,15 @@ class App extends Component {
           console.log(val);
           if(val && (val.position == 'hr' || val.position == 'technician')){
             store.dispatch(reduxAuth.setPosition(val.position));
-            store.dispatch(reduxLogin.setLoading(false));
             store.dispatch(replace(homeRoute))
           }
+          store.dispatch(reduxLogin.setLoading(false));
         })
       } else {
         console.log('logged out');
         store.dispatch(reduxAuth.logout());
         store.dispatch(replace(loginRoute))
+        store.dispatch(reduxLogin.setLoading(false));
         // No user is signed in.
       }
     });

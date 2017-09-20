@@ -7,6 +7,7 @@ import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Select from 'material-ui/Select';
+import { CircularProgress } from 'material-ui/Progress';
 
 const styles = theme => ({
   container: {
@@ -22,7 +23,7 @@ const styles = theme => ({
 
 class TicketList extends Component {
   componentDidMount(){
-
+    this.props.loadRequest();
     fetch('http://helpdesk.dev/api/tickets', {
       method: 'GET'
     }).then(response=>response.json())
@@ -50,7 +51,6 @@ class TicketList extends Component {
             }]
           }
         }
-        console.log(arr);
         this.props.populateTechnicians(arr);
       }
     })
@@ -97,25 +97,28 @@ class TicketList extends Component {
     const classes = this.props.classes;
     return (
       <div className="App">
-        <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Subject</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Assigned To</TableCell>
-            <TableCell>Priority</TableCell>
-            <TableCell>Escalation Level</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {this.props.tickets.map(data=>{
-            return this.renderTable(data, classes)
-          })}
-        </TableBody>
-      </Table>
+        {this.props.loading ? 
+          <CircularProgress size={50} /> :
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Subject</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Assigned To</TableCell>
+                <TableCell>Priority</TableCell>
+                <TableCell>Escalation Level</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {this.props.tickets.map(data=>{
+                return this.renderTable(data, classes)
+              })}
+            </TableBody>
+          </Table>
+        }
       </div>
     );
   }
