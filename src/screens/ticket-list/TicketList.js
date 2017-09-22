@@ -188,12 +188,12 @@ class TicketList extends Component {
         <TableCell><span>{item.email}</span></TableCell>
         <TableCell><span>{item.software_issue}</span></TableCell>
         <TableCell><span>{item.statuses[0].status || 'Pending'}</span></TableCell>
-        <TableCell>{item.static ? this.getTechnicalName(item.technical_email) : this.renderTechniciansOptions(item, classes, ticket_index)}</TableCell>
-        <TableCell>{item.static ? this.renderPriority(item.priority) : this.renderPriorityOptions(item, classes, ticket_index)}</TableCell>
-        <TableCell>{item.static ? item.escalation_level : this.renderEscalationLevelOptions(item, classes, ticket_index)}</TableCell>
+        <TableCell>{item.static && this.props.position == 'hr' ? this.getTechnicalName(item.technical_email) : this.renderTechniciansOptions(item, classes, ticket_index)}</TableCell>
+        <TableCell>{item.static && this.props.position == 'hr' ? this.renderPriority(item.priority) : this.renderPriorityOptions(item, classes, ticket_index)}</TableCell>
+        <TableCell>{item.static && this.props.position == 'hr' ? item.escalation_level : this.renderEscalationLevelOptions(item, classes, ticket_index)}</TableCell>
         <TableCell>
             {item.save_loading ? <CircularProgress size={50} /> : 
-              (item.static ? null : <IconButton onClick={()=>{this.saveTicket(item, ticket_index)}} color="accent" aria-label="Save">
+              (item.static && this.props.position == 'hr' ? null : <IconButton onClick={()=>{this.saveTicket(item, ticket_index)}} color="accent" aria-label="Save">
             <SaveIcon/>
             </IconButton>)
             }
