@@ -185,7 +185,7 @@ class NavBar extends Component {
                   <MenuIcon />
                 </IconButton>
                   <Typography type="title" color="inherit" className={classes.flex} noWrap>
-                  Title
+                  Helpdesk
                   </Typography>
                   <Button
                   onClick={()=>{

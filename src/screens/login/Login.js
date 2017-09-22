@@ -7,7 +7,7 @@ import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import Icon from 'material-ui/Icon';
 import * as backgroundImage from './background.jpg';
-
+import { CircularProgress } from 'material-ui/Progress';
 const styles = theme => ({
   root: theme.mixins.gutters({
     paddingTop: 16,
@@ -91,7 +91,7 @@ class Login extends Component {
             </Grid> */}
             <Grid item md={2} lg={3}/>
             <Grid item xs={12} md={8} lg={6}>
-              {this.props.loading ? null : this.renderLoginButton(classes)}
+              {this.props.loading ?  <CircularProgress size={150} /> : this.renderLoginButton(classes)}
             </Grid>  
           </Grid>
       </div>

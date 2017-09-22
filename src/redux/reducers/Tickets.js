@@ -37,19 +37,74 @@ export default (state = default_state, action) => {
                 technicians: action.technicians
             }
         case 'CHANGE_TECHNICIAN':
-            let tempTickets = state.tickets.map((item, index)=>{
-                if(index !== action.index){
-                    return item
-                }
-
-                return {
-                    ...item,
-                    technician_email: action.technician
-                }
-            })
             return {
                 ...state,
-                tickets: [...tempTickets]
+                tickets: state.tickets.map((item, index)=>{
+                    if(index !== action.index){
+                        return item
+                    }
+    
+                    return {
+                        ...item,
+                        technical_email: action.technician
+                    }
+                })
+            }
+        case 'CHANGE_PRIORITY':
+            return {
+                ...state,
+                tickets: state.tickets.map((item, index)=>{
+                    if(index !== action.index){
+                        return item
+                    }
+    
+                    return {
+                        ...item,
+                        priority: action.priority
+                    }
+                })
+            }
+        case 'CHANGE_ESCALATION_LEVEL':
+            return {
+                ...state,
+                tickets: state.tickets.map((item, index)=>{
+                    if(index !== action.index){
+                        return item
+                    }
+    
+                    return {
+                        ...item,
+                        escalation_level: action.escalation_level
+                    }
+                })
+            }
+        case 'SET_SAVE_LOADING':
+            return {
+                ...state,
+                tickets: state.tickets.map((item, index)=>{
+                    if(index !== action.index){
+                        return item
+                    }
+    
+                    return {
+                        ...item,
+                        save_loading: action.loading
+                    }
+                })
+            }
+        case 'SET_STATIC':
+            return {
+                ...state,
+                tickets: state.tickets.map((item, index)=>{
+                    if(index !== action.index){
+                        return item
+                    }
+    
+                    return {
+                        ...item,
+                        static: action.static
+                    }
+                })
             }
         default:
             return state

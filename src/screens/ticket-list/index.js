@@ -4,7 +4,8 @@ import {tickets} from '../../redux/actions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    ...state.tickets
+    ...state.tickets,
+    ...state.auth
   }
 }
 
@@ -14,7 +15,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(tickets.setLoading(true))
     },
     populateTickets: (array) => {
-      dispatch(tickets.setTickets(array))
+      console.log(array);
+      dispatch(tickets.setTickets(array.map(item=>(
+        {...item, 
+          static: item.technical_email !== null, 
+          save_loading: false}
+      ))))
       dispatch(tickets.setSuccess(true))
       dispatch(tickets.setLoading(false))
     },
@@ -24,6 +30,21 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     populateTechnicians: (array) => {
       dispatch(tickets.setTechnicians(array))
+    },
+    changeTechnician: (newVal, index) => {
+      dispatch(tickets.changeTecnhician(newVal, index));
+    },
+    changePriority: (newVal, index) => {
+      dispatch(tickets.changePriority(newVal, index));
+    },
+    changeEscalationLevel: (newVal, index) => {
+      dispatch(tickets.changeEscalationLevel(newVal, index));
+    },
+    setSaveLoading: (loading = true, index) => {
+      dispatch(tickets.setSaveLoading(loading, index));
+    },
+    setStatic: (newVal = true, index) => {
+      dispatch(tickets.setStatic(newVal, index))
     }
   }
 }
