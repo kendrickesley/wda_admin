@@ -9,7 +9,14 @@ var default_state = {
     editor_state: EditorState.createEmpty(),
     comment_html: '',
     comment_save_loading: false,
-    request_comment_error: false
+    request_comment_error: false,
+    status_form: {
+        title: '',
+        content: '',
+        status: ''
+    },
+    status_save_loading: false,
+    request_status_error: false,
 }
 export default (state = default_state, action) => {
     switch(action.type){
@@ -70,6 +77,48 @@ export default (state = default_state, action) => {
             return {
                 ...state,
                 request_comment_error: action.request_comment_error
+            }
+        case 'SET_STATUS_TITLE': 
+            return {
+                ...state,
+                status_form: {
+                    ...state.status_form,
+                    title: action.title
+                }
+            }
+        case 'SET_STATUS_CONTENT': 
+            return {
+                ...state,
+                status_form: {
+                    ...state.status_form,
+                    content: action.content
+                }
+            }
+        case 'SET_STATUS_STATUS': 
+            return {
+                ...state,
+                status_form: {
+                    ...state.status_form,
+                    status: action.status
+                }
+            }
+        case 'PUSH_STATUS':
+            return {
+                ...state,
+                ticket: {
+                    ...state.ticket,
+                    statuses: [action.status, ...state.ticket.statuses]
+                }
+            }
+        case 'SET_STATUS_SAVE_LOADING':
+            return {
+                ...state,
+                status_save_loading: action.status_save_loading
+            }
+        case 'REQUEST_STATUS_ERROR':
+            return {
+                ...state,
+                request_status_error: action.request_status_error
             }
         default:
             return state

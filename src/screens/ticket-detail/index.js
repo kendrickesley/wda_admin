@@ -45,7 +45,25 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     requestCommentError: (request_comment_error = true) => {
       dispatch(ticketDetail.requestCommentError(request_comment_error));
-    }
+    },
+    setStatusTitle: (title) => {
+      dispatch(ticketDetail.setStatusTitle(title))
+    },
+    setStatusContent: (content) => {
+      dispatch(ticketDetail.setStatusContent(content))
+    },
+    setStatusStatus: (status) => {
+      dispatch(ticketDetail.setStatusStatus(status))
+    },
+    setStatusSaveLoading: (status_save_loading = true) => {
+      dispatch(ticketDetail.setStatusSaveLoading(status_save_loading));
+    },
+    pushStatus: (status) => {
+      dispatch(ticketDetail.pushStatus(status))
+    },
+    requestStatusError: (request_status_error = true) => {
+      dispatch(ticketDetail.requestStatusError(request_status_error));
+    },
   }
 }
 

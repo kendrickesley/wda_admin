@@ -101,6 +101,39 @@ class TicketDetail extends Component {
       })  
     }
 
+    submitStatus(){
+      var formData = new FormData();
+      formData.append("admin_email", this.props.user.email);
+      formData.append("title", this.props.status_form.title);
+      formData.append("content", this.props.status_form.content);
+      formData.append("status", this.props.status_form.status);
+      this.props.setStatusSaveLoading(true);
+      fetch('http://helpdesk.dev/api/tickets/'+this.props.ticket_id+'/status', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: formData
+      }).then(response=>response.json())
+      .then(responseJson=>{
+        console.log(responseJson);
+        this.props.setStatusSaveLoading(false);
+        this.props.requestStatusError(false);
+        if(responseJson.status === 'OK'){
+          this.props.pushStatus(responseJson.body.status);
+          this.props.setStatusTitle('');
+          this.props.setStatusContent('');
+          this.props.setStatusStatus('');
+        }else{
+          this.props.requestStatusError();
+        }
+      }).catch(err=>{
+        this.props.setStatusSaveLoading(false);
+        console.log(err)
+        this.props.requestStatusError();
+      })  
+    }
+
     renderError(){
       const classes = this.props.classes;
       return (
@@ -391,24 +424,30 @@ class TicketDetail extends Component {
         <TextField
           id="title"
           label="Title"
-          value={''}
-          onChange={()=>{}}
+          value={this.props.status_form.title}
+          onChange={(e)=>{
+            this.props.setStatusTitle(e.target.value)
+          }}
           fullWidth
           margin="normal"
         />
         <TextField
           id="status-content"
           label="Content"
-          value={''}
-          onChange={()=>{}}
+          value={this.props.status_form.content}
+          onChange={(e)=>{
+            this.props.setStatusContent(e.target.value)
+          }}
           fullWidth
           margin="normal"
         />
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="status-status">Status</InputLabel>
           <Select
-            value={''}
-            onChange={()=>{}}
+            value={this.props.status_form.status}
+            onChange={(e)=>{
+            this.props.setStatusStatus(e.target.value)
+          }}
             input={<Input id="status-status" />}
           >
             <MenuItem value="">
@@ -419,9 +458,20 @@ class TicketDetail extends Component {
             <MenuItem value={'UNRESOLVED'}>Unresolved</MenuItem>
             <MenuItem value={'RESOLVED'}>Resolved</MenuItem>
           </Select>
-          <Button onClick={()=>{}} raised color="primary" style={{marginTop:25}}>
+          {this.props.request_status_error ? 
+            <Typography type="body2" gutterBottom style={{color:'#fc1414'}}>
+              Whoops! make sure your input is valid!
+              </Typography>
+          :null
+          }
+          {this.props.status_save_loading ? 
+            <CircularProgress size={50}/>
+            :
+            <Button onClick={this.submitStatus.bind(this)} raised color="primary" style={{marginTop:25}}>
             Save
-          </Button>
+            </Button>
+          }
+          
         </FormControl>
       </form>
       )
