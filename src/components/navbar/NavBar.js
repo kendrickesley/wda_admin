@@ -19,8 +19,9 @@ import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import { Route, Switch, Redirect } from 'react-router'
 import HomeScreen from '../../screens/home';
 import TicketListScreen from '../../screens/ticket-list';
+import TicketDetailScreen from '../../screens/ticket-detail';
 import { push, replace } from 'react-router-redux'
-import {ticketList as ticketListRoute, home as homeRoute} from '../../routes';
+import {ticketList as ticketListRoute, home as homeRoute, ticketDetail as ticketDetailRoute} from '../../routes';
 const drawerWidth = 240;
 const styles = theme => ({
   root: {
@@ -210,7 +211,7 @@ class NavBar extends Component {
                 </div>
                 <Divider />
                 <List className={classes.list}>
-                  {this.generateListItem(homeRoute, "Dashboard", HomeIcon, true)}
+                  {/* {this.generateListItem(homeRoute, "Dashboard", HomeIcon, true)} */}
                   {this.generateListItem(ticketListRoute, "Tickets", ViewListIcon)}
                 </List>
               </div>
@@ -219,7 +220,15 @@ class NavBar extends Component {
                 <Switch>
                   <Route exact path={homeRoute} render={() => {
                     if(this.checkAuth()){
-                      return <HomeScreen/>
+                      {/* return <HomeScreen/> */}
+                      return <Redirect to="/app/tickets"/>
+                    }else{
+                      return <Redirect to="/"/>
+                    }
+                    }}/>
+                  <Route exact path={ticketDetailRoute} render={({match}) => {
+                    if(this.checkAuth()){
+                      return <TicketDetailScreen tid={match.params.tid}/>
                     }else{
                       return <Redirect to="/"/>
                     }

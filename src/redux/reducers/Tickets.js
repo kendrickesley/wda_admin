@@ -2,7 +2,8 @@ var default_state = {
     tickets: [],
     success: false,
     loading: false,
-    technicians: []
+    technicians: [],
+    static: false
 }
 export default (state = default_state, action) => {
     switch(action.type){

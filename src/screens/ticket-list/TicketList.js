@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './TicketList.css';
+import {Link} from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import {db as fireDB} from '../../firebase';
@@ -183,17 +184,17 @@ class TicketList extends Component {
   renderTable(item, classes, ticket_index){
     return (
       <TableRow key={item.tid}>
-        <TableCell><span>{item.ticket_id}</span></TableCell>
+        <TableCell><Link to={`/app/tickets/${item.tid}`}>{item.ticket_id}</Link></TableCell>
         <TableCell><span>{item.first_name + ' ' + item.last_name}</span></TableCell>
         <TableCell><span>{item.email}</span></TableCell>
         <TableCell><span>{item.software_issue}</span></TableCell>
         <TableCell><span>{item.statuses[0].status || 'Pending'}</span></TableCell>
-        <TableCell>{item.static && this.props.position == 'hr' ? this.getTechnicalName(item.technical_email) : this.renderTechniciansOptions(item, classes, ticket_index)}</TableCell>
-        <TableCell>{item.static && this.props.position == 'hr' ? this.renderPriority(item.priority) : this.renderPriorityOptions(item, classes, ticket_index)}</TableCell>
-        <TableCell>{item.static && this.props.position == 'hr' ? item.escalation_level : this.renderEscalationLevelOptions(item, classes, ticket_index)}</TableCell>
+        <TableCell>{item.static || this.props.position == 'technician' ? this.getTechnicalName(item.technical_email) : this.renderTechniciansOptions(item, classes, ticket_index)}</TableCell>
+        <TableCell>{item.static || this.props.position == 'technician' ? this.renderPriority(item.priority) : this.renderPriorityOptions(item, classes, ticket_index)}</TableCell>
+        <TableCell>{item.static || this.props.position == 'technician' ? item.escalation_level : this.renderEscalationLevelOptions(item, classes, ticket_index)}</TableCell>
         <TableCell>
             {item.save_loading ? <CircularProgress size={50} /> : 
-              (item.static && this.props.position == 'hr' ? null : <IconButton onClick={()=>{this.saveTicket(item, ticket_index)}} color="accent" aria-label="Save">
+              (item.static || this.props.position == 'technician' ? null : <IconButton onClick={()=>{this.saveTicket(item, ticket_index)}} color="accent" aria-label="Save">
             <SaveIcon/>
             </IconButton>)
             }
