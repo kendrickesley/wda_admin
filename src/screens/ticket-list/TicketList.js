@@ -17,6 +17,7 @@ import Select from 'material-ui/Select';
 import { CircularProgress } from 'material-ui/Progress';
 import IconButton from 'material-ui/IconButton';
 import Grid from 'material-ui/Grid';
+import Paper from 'material-ui/Paper';
 //ICON
 import Icon from 'material-ui/Icon';
 import SaveIcon from 'material-ui-icons/Save';
@@ -35,9 +36,17 @@ const styles = theme => ({
   },
   descCell: {
     whiteSpace:'normal!important'
-  }
+  },
+  paper: theme.mixins.gutters({
+    paddingTop: 16,
+    paddingBottom: 16,
+    marginTop: theme.spacing.unit * 3,
+  }),
 });
-
+String.prototype.trunc = String.prototype.trunc ||
+  function(n){
+      return (this.length > n) ? this.substr(0, n-1) + '...' : this;
+  };
 //main component
 class TicketList extends Component {
   componentDidMount(){
@@ -212,7 +221,7 @@ class TicketList extends Component {
         <TableCell><Link to={`/app/tickets/${item.tid}`}>{item.ticket_id}</Link></TableCell>
         <TableCell><span>{item.first_name + ' ' + item.last_name}</span></TableCell>
         <TableCell><span>{item.email}</span></TableCell>
-        <TableCell classes={{root:classes.descCell}}><span>{item.software_issue}</span></TableCell>
+        <TableCell classes={{root:classes.descCell}}><span>{item.software_issue.trunc(10)}</span></TableCell>
         <TableCell><span>{item.statuses[0].status || 'Pending'}</span></TableCell>
         <TableCell>{item.static || this.props.position == 'technician' ? this.getTechnicalName(item.technical_email) : this.renderTechniciansOptions(item, classes, ticket_index)}</TableCell>
         <TableCell>{item.static || this.props.position == 'technician' ? this.renderPriority(item.priority) : this.renderPriorityOptions(item, classes, ticket_index)}</TableCell>
@@ -233,6 +242,7 @@ class TicketList extends Component {
     const classes = this.props.classes;
     return (
       <div className="App">
+        <Paper className={classes.paper} elevation={4}>
         {this.props.loading ? 
           <CircularProgress size={50} /> :
           <Grid container>
@@ -261,6 +271,7 @@ class TicketList extends Component {
           </Grid>
           
         }
+        </Paper>
       </div>
     );
   }

@@ -21,10 +21,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     googleClicked: () => {
       dispatch(login.setLoading(true))
       const result = auth().signInWithRedirect(google_provider)
+      dispatch(login.setError(false))
     },
     facebookClicked: () => {
       dispatch(login.setLoading(true))
       const result = auth().signInWithRedirect(fb_provider)
+      dispatch(login.setError(false))
+    },
+    setError: (error = true) => {
+      dispatch(login.setError(error))
     }
   }
 }

@@ -18,6 +18,7 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import Input, { InputLabel } from 'material-ui/Input';
+import Paper from 'material-ui/Paper';
 
 //WYSWYG editor components
 import { EditorState } from 'draft-js';
@@ -44,6 +45,11 @@ const styles = theme => ({
       flexGrow: 1,
       marginTop: 30,
     },
+    paper: theme.mixins.gutters({
+      paddingTop: 16,
+      paddingBottom: 16,
+      marginTop: theme.spacing.unit * 3,
+    }),
     editor:{
       minHeight:300,
     },
@@ -183,6 +189,15 @@ class TicketDetail extends Component {
         console.log(err)
         this.props.requestStatusError();
       })  
+    }
+
+    submitTechnician(){
+      var formData = new FormData();
+      formData.append("helpdesk_email", this.props.user.email);
+      formData.append("technical_email", this.props.technician_form.technical_email);
+      formData.append("escalation_level", this.props.technician_form.escalation_level);
+      this.props.setTechnicianSaveLoading(true); //set loading to true, set it to false after response is complete
+    
     }
 
     //Render an error message if ticket cannot be acquired
@@ -635,13 +650,13 @@ class TicketDetail extends Component {
             <FormControl className={this.props.classes.formControl}>
               <InputLabel htmlFor="ticket-technician">Technician</InputLabel>
               <Select
-                value={""}
+                value={this.props.technician_form.technical_email}
                 onChange={(e)=>{
-                
-              }}
-              className={this.props.classes.fullWidth}
-                input={<Input id="ticket-technician" />}
-              >
+                  this.props.setTechnicianEmail(e.target.value)
+                }}
+                className={this.props.classes.fullWidth}
+                  input={<Input id="ticket-technician" />}
+                >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
@@ -656,13 +671,13 @@ class TicketDetail extends Component {
             <FormControl className={this.props.classes.formControl}>
               <InputLabel htmlFor="ticket-escalation_level">Escalation Level</InputLabel>
               <Select
-                value={""}
+                value={this.props.technician_form.escalation_level}
                 onChange={(e)=>{
-                
-              }}
-              className={this.props.classes.fullWidth}
-                input={<Input id="ticket-escalation_level" />}
-              >
+                  this.props.setTechnicianEscalationLevel(e.target.value)
+                }}
+                className={this.props.classes.fullWidth}
+                  input={<Input id="ticket-escalation_level" />}
+                >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
@@ -673,7 +688,21 @@ class TicketDetail extends Component {
               </Select>
               </FormControl>
             </Grid>
-            
+            <Grid item xs={12} sm={6} lg={4}>
+              {this.props.request_technician_error ? 
+                <Typography type="body2" gutterBottom style={{color:'#fc1414'}}>
+                  Whoops! make sure your input is valid!
+                  </Typography>
+              :null
+              }
+              {this.props.technician_save_loading ? 
+                <CircularProgress size={50}/>
+                :
+                <Button onClick={this.submitTechnician.bind(this)} raised color="primary">
+                Save
+                </Button>
+              }
+            </Grid>
           </Grid>
         </div>
       )
@@ -684,20 +713,30 @@ class TicketDetail extends Component {
       if(!this.props.ticket){
         return (<div></div>)
       }
+      const classes = this.props.classes;
       return (
         <div>
+          <Paper className={classes.paper} elevation={4}>
           {this.renderTicketDetail()}
-          <Divider className={this.props.classes.divider}/>
+          </Paper>
+          <Paper className={classes.paper} elevation={4}>
           {this.renderTechnician()}
-          <Divider className={this.props.classes.divider}/>
+          </Paper>
+          <Paper className={classes.paper} elevation={4}>
           {this.renderTechnicianForm()}
-          <Divider className={this.props.classes.divider}/>
+          </Paper>
           <Grid container spacing={24}>
+            
+            <Grid item xs={12} md={6}>
+              <Paper className={classes.paper} elevation={4}>
+              {this.renderComments()}
+              </Paper>
+            </Grid>
+            
           <Grid item xs={12} md={6}>
-            {this.renderComments()}
-          </Grid>
-          <Grid item xs={12} md={6}>
+            <Paper className={classes.paper} elevation={4}>
             {this.renderStatuses()}
+            </Paper>
           </Grid>
           
         </Grid>

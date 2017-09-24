@@ -86,7 +86,7 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.white,
     minHeight: '100vh',
   },
   drawerPaperClose: {
@@ -114,7 +114,7 @@ const styles = theme => ({
     width: '100%',
     maxWidth: '100%',
     flexGrow: 1,
-    backgroundColor: theme.palette.background.white,
+    backgroundColor: theme.palette.background.default,
     padding: 24,
     height: 'calc(100% - 56px)',
     marginTop: 56,

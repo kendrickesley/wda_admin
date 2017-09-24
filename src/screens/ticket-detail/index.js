@@ -73,6 +73,21 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     requestStatusError: (request_status_error = true) => {
       dispatch(ticketDetail.requestStatusError(request_status_error));
     },
+    setTechnicianSaveLoading: (technician_save_loading = true) => {
+      dispatch(ticketDetail.setTechnicianSaveLoading(technician_save_loading))
+    },
+    pushTechnicianHistory: (history)=>{
+      dispatch(ticketDetail.pushTechnicianHistory(history))
+    },
+    requestTechnicianError: (request_technician_error) => {
+      dispatch(ticketDetail.requestTechnicianError(request_technician_error))
+    },
+    setTechnicianEmail: (email) => {
+      dispatch(ticketDetail.setTechnicianEmail(email));
+    },
+    setTechnicianEscalationLevel: (escalation_level) => {
+      dispatch(ticketDetail.setTechnicianEscalationLevel(escalation_level))
+    }
   }
 }
 

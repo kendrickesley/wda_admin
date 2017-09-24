@@ -16,7 +16,13 @@ var default_state = {
         status: '' //status [status]
     },
     status_save_loading: false, //status loading flag
-    request_status_error: false, //status error flag
+    request_status_error: false, //status error flag,
+    technician_form: {
+        technical_email: '', //technician's email
+        escalation_level: '' //escalation level of the ticket
+    },
+    technician_save_loading: false, //technician loading flag
+    request_technician_error: false //technician error flag
 }
 export default (state = default_state, action) => {
     switch(action.type){
@@ -119,6 +125,40 @@ export default (state = default_state, action) => {
             return {
                 ...state,
                 request_status_error: action.request_status_error
+            }
+        case 'SET_TECHNICIAN_SAVE_LOADING':
+            return {
+                ...state,
+                technician_save_loading: action.technician_save_loading
+            }
+        case 'SET_TECHNICIAN_EMAIL':
+            return {
+                ...state,
+                technician_form: {
+                    ...state.technician_form,
+                    technical_email: action.technical_email
+                }
+            }
+        case 'SET_TECHNICIAN_ESCALATION_LEVEL':
+            return {
+                ...state,
+                technician_form: {
+                    ...state.technician_form,
+                    escalation_level: action.escalation_level
+                }
+            }
+        case 'PUSH_TECHNICIAN_HISTORY':
+            return {
+                ...state,
+                ticket: {
+                    ...state.ticket,
+                    admins: [action.history, ...state.ticket.admins]
+                }
+            }
+        case 'REQUEST_TECHNICIAN_ERROR':
+            return {
+                ...state,
+                request_technician_error: action.request_technician_error
             }
         default:
             return state

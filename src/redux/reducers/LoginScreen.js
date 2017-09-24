@@ -1,6 +1,7 @@
 var default_state = {
     err_credential: false, //login_error flag
-    loading: true //loading flag
+    loading: true, //loading flag,
+    error: false
 }
 export default (state = default_state, action) => {
     switch(action.type){
@@ -13,6 +14,11 @@ export default (state = default_state, action) => {
             return {
                 ...state,
                 loading: action.loading
+            }
+        case 'SET_ERROR':
+            return {
+                ...state,
+                error: action.error
             }
         default:
             return state

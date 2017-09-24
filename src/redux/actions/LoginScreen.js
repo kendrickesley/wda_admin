@@ -4,6 +4,12 @@ const setLoading = (loading)=>({
     loading: loading
 })
 
+const setError = error => ({
+    type: 'SET_ERROR',
+    error
+})
+
 export default {
-    setLoading
+    setLoading,
+    setError
 }

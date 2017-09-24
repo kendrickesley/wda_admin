@@ -36,6 +36,7 @@ class App extends Component {
     super(props);
     auth().onAuthStateChanged(function(user) {
       if (user) {
+        console.log('user is signed in')
         // User is signed in.
         store.dispatch(reduxAuth.setUser({
           email: user.email,
@@ -48,7 +49,12 @@ class App extends Component {
           if(val && (val.position == 'hr' || val.position == 'technician')){
             store.dispatch(reduxAuth.setPosition(val.position));
             store.dispatch(replace(homeRoute))
+          }else{
+            store.dispatch(reduxLogin.setError(true))
           }
+          store.dispatch(reduxLogin.setLoading(false));
+        }, (err)=>{
+          store.dispatch(reduxLogin.setError(true))
           store.dispatch(reduxLogin.setLoading(false));
         })
       } else {

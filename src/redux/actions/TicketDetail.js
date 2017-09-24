@@ -103,6 +103,34 @@ const requestStatusError = (request_status_error) => ({
     request_status_error          
 })
 
+//set technician's loading flag to the store
+const setTechnicianSaveLoading = (technician_save_loading) => ({
+    type: 'SET_TECHNICIAN_SAVE_LOADING',
+    technician_save_loading
+})
+
+//push a technician history to the array
+const pushTechnicianHistory = (history) => ({
+    type: 'PUSH_TECHNICIAN_HISTORY',
+    history
+})
+
+//set status' error flag to the store
+const requestTechnicianError = (request_technician_error) => ({
+    type: 'REQUEST_TECHNICIAN_ERROR',
+    request_technician_error          
+})
+
+const setTechnicianEmail = (technical_email) => ({
+    type: 'SET_TECHNICIAN_EMAIL',
+    technical_email
+})
+
+const setTechnicianEscalationLevel = (escalation_level) => ({
+    type: 'SET_TECHNICIAN_ESCALATION_LEVEL',
+    escalation_level
+})
+
 export default {
     setTicketID,
     setTicket,
@@ -120,5 +148,10 @@ export default {
     setStatusStatus,
     setStatusSaveLoading,
     pushStatus,
-    requestStatusError
+    requestStatusError,
+    setTechnicianSaveLoading,
+    pushTechnicianHistory,
+    requestTechnicianError,
+    setTechnicianEmail,
+    setTechnicianEscalationLevel
 }
