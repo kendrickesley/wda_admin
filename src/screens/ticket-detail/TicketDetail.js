@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
+
+//Custom component
 import './TicketDetail.css';
+
+//Material UI Helper
 import { withStyles } from 'material-ui/styles';
+
+//Material UI components
 import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
-import { Editor } from 'react-draft-wysiwyg';
-import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import Divider from 'material-ui/Divider';
 import Chip from 'material-ui/Chip';
 import TextField from 'material-ui/TextField';
@@ -14,7 +18,16 @@ import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import Input, { InputLabel } from 'material-ui/Input';
+
+//WYSWYG editor components
 import { EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import '../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
+//firebase components
+import {db as fireDB} from '../../firebase';
+
+//custom styles for the screen
 const styles = theme => ({
     container: {
       display: 'flex',
@@ -25,6 +38,7 @@ const styles = theme => ({
     },
     formControl: {
       minWidth: 120,
+      width:'100%'
     },
     root: {
       flexGrow: 1,
@@ -36,21 +50,48 @@ const styles = theme => ({
     divider: {
       marginTop:15,
       marginBottom:15
+    },
+    fullWidth:{
+      width:'100%'
     }
   });
 
+  //helper function to make title case
   function toTitleCase(str)
   {
       return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
   }
 
+  //main component
 class TicketDetail extends Component {
     componentDidMount(){
+      //set ticket id to store
         this.props.setTicketID(this.props.tid);
+        //populate ticket based on ticket id
         this.fetchTicket();
+
+        //populate technicians array from firebase
+        fireDB.ref('/technicians').once('value', (snapshot) => {
+          const val = snapshot.val();
+          if(val){
+            var arr = [];
+            for(var key in val){
+              if (val.hasOwnProperty(key)){
+                arr = [...arr, {
+                  email: val[key].email,
+                  name: val[key].name,
+                  key: key
+                }]
+              }
+            }
+            this.props.populateTechnicians(arr);
+          }
+        })
     }
 
+    //method to fetch ticket from the API
     fetchTicket(){
+      //set loading to true. set to false after request success/error
       this.props.loadRequest()
       fetch('http://helpdesk.dev/api/tickets/'+this.props.tid+'?pos='+this.props.position+'&em='+this.props.user.email, {
         method: 'GET',
@@ -61,21 +102,25 @@ class TicketDetail extends Component {
       .then(responseJson=>{
         console.log(responseJson)
         if(responseJson.status === 'OK'){
+          //set the ticket object to the store
           this.props.setTicket(responseJson.body.ticket);
           this.props.requestError(false);
         }else{
           this.props.requestError();
         }
       }).catch(err=>{
+        //handle error
         console.log(err)
         this.props.requestError();
       })  
     }
 
+    //method to submit a newly created comment
     submitComment(){
       var formData = new FormData();
       formData.append("admin_email", this.props.user.email);
       formData.append("content", this.props.comment_html);
+      //set loading to true, set it to false after response is complete
       this.props.setCommentSaveLoading(true);
       fetch('http://helpdesk.dev/api/tickets/'+this.props.ticket_id+'/comment', {
         method: 'POST',
@@ -89,25 +134,28 @@ class TicketDetail extends Component {
         this.props.setCommentSaveLoading(false);
         this.props.requestCommentError(false);
         if(responseJson.status === 'OK'){
-          this.props.setEditorState(EditorState.createEmpty());
-          this.props.pushComment(responseJson.body.comment);
+          this.props.setEditorState(EditorState.createEmpty()); //clear the editor
+          this.props.pushComment(responseJson.body.comment); //push the newly created comment to the array for displaying purposes
         }else{
+          //input is invalid
           this.props.requestCommentError();
         }
       }).catch(err=>{
+        //handle error
         this.props.setCommentSaveLoading(false);
         console.log(err)
         this.props.requestCommentError();
       })  
     }
 
+    //method to submit a newly created status
     submitStatus(){
       var formData = new FormData();
       formData.append("admin_email", this.props.user.email);
       formData.append("title", this.props.status_form.title);
       formData.append("content", this.props.status_form.content);
       formData.append("status", this.props.status_form.status);
-      this.props.setStatusSaveLoading(true);
+      this.props.setStatusSaveLoading(true); //set loading to true, set it to false after response is complete
       fetch('http://helpdesk.dev/api/tickets/'+this.props.ticket_id+'/status', {
         method: 'POST',
         headers: {
@@ -120,7 +168,10 @@ class TicketDetail extends Component {
         this.props.setStatusSaveLoading(false);
         this.props.requestStatusError(false);
         if(responseJson.status === 'OK'){
-          this.props.pushStatus(responseJson.body.status);
+
+          this.props.pushStatus(responseJson.body.status); //push the newly created status for displaying purposes
+
+          //clear the form
           this.props.setStatusTitle('');
           this.props.setStatusContent('');
           this.props.setStatusStatus('');
@@ -134,6 +185,7 @@ class TicketDetail extends Component {
       })  
     }
 
+    //Render an error message if ticket cannot be acquired
     renderError(){
       const classes = this.props.classes;
       return (
@@ -149,6 +201,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //Render the ticket detail using material ui grid system
     renderTicketDetail(){
       const ticket = this.props.ticket;
       return (
@@ -230,12 +283,15 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the admin in history who is in charge of the ticket
     renderAdmin(admin){
       const {technical_email, helpdesk_email, priority, escalation_level} = admin;
       return (
         <Grid container spacing={24}>
           <Grid item xs={12} md={6}>
             <Typography type="title" gutterBottom>
+            {this.getTechnicalName(technical_email)}
+            <br/>
             {technical_email}
             </Typography>
             <Typography type="caption" gutterBottom>
@@ -272,6 +328,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the history of assigned technicians to the ticket
     renderTechnicianHistory(){
       const {admins} = this.props.ticket;
       return (
@@ -297,6 +354,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the technician who is in charge of the ticket
     renderTechnician(){
       const {escalation_level, technical_email, helpdesk_email, priority} = this.props.ticket;
       if(technical_email == null){
@@ -314,6 +372,8 @@ class TicketDetail extends Component {
         <Grid container spacing={24}>
           <Grid item xs={12} md={6}>
             <Typography type="title" gutterBottom>
+            {this.getTechnicalName(technical_email)}
+            <br/>
             {technical_email}
             </Typography>
             <Typography type="caption" gutterBottom>
@@ -354,6 +414,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the status item
     renderStatus(stat){
       const {title, message, status, admin_email, sid} = stat
       const pendingColor = '#ff6b57';
@@ -380,6 +441,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the status history
     renderStatuses(){
       const statuses = this.props.ticket.statuses;
       return (
@@ -417,6 +479,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the status form
     renderStatusForm(){
       const classes = this.props.classes;
       return (
@@ -477,12 +540,15 @@ class TicketDetail extends Component {
       )
     }
 
+    //render a single comment
     renderComment(comment){
       const {admin_email, content, cid} = comment;
       return (
         <div key={'comment-'+cid}>
           <Typography type="body2" gutterBottom>
-          {admin_email}
+          {this.getTechnicalName(admin_email)}
+          <br/>
+          {admin_email} 
           </Typography>
           <Typography type="body1" gutterBottom>
           <span dangerouslySetInnerHTML={{__html: content}}></span>
@@ -492,6 +558,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the comment form.
     renderCommentForm(){
       const classes = this.props.classes;
       return (
@@ -519,6 +586,7 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the comment history
     renderComments(){
       const comments = this.props.ticket.comments;
       const classes = this.props.classes;
@@ -553,6 +621,65 @@ class TicketDetail extends Component {
       )
     }
 
+    //render the technician form
+    renderTechnicianForm(){
+      const {escalation_level, technical_email} = this.props.ticket;
+      return (
+        <div>
+          <Typography type="title" gutterBottom>
+          {this.props.position === 'hr' ? 'Reassign Technician' : 'Request new technician'}
+          </Typography>
+          <Grid container spacing={24}>
+          
+            <Grid item xs={12} sm={6} lg={4}>
+            <FormControl className={this.props.classes.formControl}>
+              <InputLabel htmlFor="ticket-technician">Technician</InputLabel>
+              <Select
+                value={""}
+                onChange={(e)=>{
+                
+              }}
+              className={this.props.classes.fullWidth}
+                input={<Input id="ticket-technician" />}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {this.props.technicians.filter(tech=>(tech.email !== technical_email)).map(tech=>(
+                  <MenuItem key={'technician-' + tech.key} value={decodeURIComponent(tech.key)}>{tech.name}</MenuItem>
+                ))}
+              </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} sm={6} lg={4}>
+            <FormControl className={this.props.classes.formControl}>
+              <InputLabel htmlFor="ticket-escalation_level">Escalation Level</InputLabel>
+              <Select
+                value={""}
+                onChange={(e)=>{
+                
+              }}
+              className={this.props.classes.fullWidth}
+                input={<Input id="ticket-escalation_level" />}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {[1,2,3].filter(obj=>(obj === 3 || escalation_level < obj)).map(lvl=>{
+                  return <MenuItem key={'escalation-level-'+lvl} value={lvl}>{lvl}</MenuItem>
+                })}
+                
+              </Select>
+              </FormControl>
+            </Grid>
+            
+          </Grid>
+        </div>
+      )
+    }
+
+    //method chaining to above methods.
     renderDetail(){
       if(!this.props.ticket){
         return (<div></div>)
@@ -562,6 +689,8 @@ class TicketDetail extends Component {
           {this.renderTicketDetail()}
           <Divider className={this.props.classes.divider}/>
           {this.renderTechnician()}
+          <Divider className={this.props.classes.divider}/>
+          {this.renderTechnicianForm()}
           <Divider className={this.props.classes.divider}/>
           <Grid container spacing={24}>
           <Grid item xs={12} md={6}>
@@ -576,8 +705,19 @@ class TicketDetail extends Component {
       )
     }
 
-    
+    //map technician email to name
+    getTechnicalName(email){
+      for(var i = 0; i < this.props.technicians.length; i++){
+        var item = this.props.technicians[i];
+        if(item.email == email){
+          return item.name;
+        }
+      }
+      return "";
+    }
 
+    
+    //the main render function
     render() {
         const classes = this.props.classes;
         return (

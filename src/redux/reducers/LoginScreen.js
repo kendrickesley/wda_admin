@@ -1,6 +1,6 @@
 var default_state = {
-    err_credential: false,
-    loading: true
+    err_credential: false, //login_error flag
+    loading: true //loading flag
 }
 export default (state = default_state, action) => {
     switch(action.type){

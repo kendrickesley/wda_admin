@@ -1,3 +1,4 @@
+//merge & export all available actions
 import login from './LoginScreen';
 import auth from './Auth';
 import tickets from './Tickets';

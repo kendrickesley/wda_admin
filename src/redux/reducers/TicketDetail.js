@@ -1,22 +1,22 @@
 import { EditorState } from 'draft-js';
 var default_state = {
-    ticket: null,
-    success: false,
-    loading: false,
-    technicians: [],
-    ticket_id: null,
-    request_error: false,
-    editor_state: EditorState.createEmpty(),
-    comment_html: '',
-    comment_save_loading: false,
-    request_comment_error: false,
+    ticket: null, //ticket object
+    success: false, //success flag
+    loading: false, //loading flag
+    technicians: [], //technicians for assigning
+    ticket_id: null, //ticket_id
+    request_error: false, //error flag
+    editor_state: EditorState.createEmpty(), //wyswyg editor
+    comment_html: '', //wyswyg content in html
+    comment_save_loading: false, //comment loading flag
+    request_comment_error: false, //comment error floag
     status_form: {
-        title: '',
-        content: '',
-        status: ''
+        title: '', //status [title]
+        content: '', //status [content]
+        status: '' //status [status]
     },
-    status_save_loading: false,
-    request_status_error: false,
+    status_save_loading: false, //status loading flag
+    request_status_error: false, //status error flag
 }
 export default (state = default_state, action) => {
     switch(action.type){

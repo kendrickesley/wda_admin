@@ -1,7 +1,11 @@
+//react-redux components
 import { connect } from 'react-redux'
+
+//custom Components
 import TicketList from './TicketList'
 import {tickets} from '../../redux/actions'
 
+//All variables which will be passed to props
 const mapStateToProps = (state, ownProps) => {
   return {
     ...state.tickets,
@@ -9,6 +13,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+//All methods which will be passed to props
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loadRequest: () => {
@@ -49,6 +54,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
+//Create TicketList which is connected with redux
 const TicketListScreen = connect(
   mapStateToProps,
   mapDispatchToProps

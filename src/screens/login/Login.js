@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
-import './Login.css';
+
+//Material UI Helper
 import { withStyles } from 'material-ui/styles';
+
+//Material UI Components
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import Button from 'material-ui/Button';
 import Icon from 'material-ui/Icon';
-import * as backgroundImage from './background.jpg';
 import { CircularProgress } from 'material-ui/Progress';
+
+//Custom components
+import * as backgroundImage from './background.jpg';
+import './Login.css';
+
+//styles for the page
 const styles = theme => ({
   root: theme.mixins.gutters({
     paddingTop: 16,
@@ -55,6 +63,7 @@ class Login extends Component {
     console.log(props)
   }
 
+  //Render facebook and google login button
   renderLoginButton(classes){
     return (
       <Grid container spacing={24}>
@@ -81,6 +90,8 @@ class Login extends Component {
       </Grid>
     )
   }
+
+  //render the login screen
   render() {
     const classes = this.props.classes;
     return (

@@ -1,17 +1,30 @@
 import React, { Component } from 'react';
-import './TicketList.css';
+//React router componet
 import {Link} from 'react-router-dom';
+
+//Custom component
+import './TicketList.css';
+
+//Material UI Helper
 import { withStyles } from 'material-ui/styles';
+
+//Material UI Components
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import {db as fireDB} from '../../firebase';
 import Input, { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import { CircularProgress } from 'material-ui/Progress';
+import IconButton from 'material-ui/IconButton';
+import Grid from 'material-ui/Grid';
+//ICON
 import Icon from 'material-ui/Icon';
 import SaveIcon from 'material-ui-icons/Save';
-import IconButton from 'material-ui/IconButton';
+
+//firebase component
+import {db as fireDB} from '../../firebase';
+
+//custom styling for the screen
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -20,20 +33,22 @@ const styles = theme => ({
   formControl: {
     minWidth: 120,
   },
+  descCell: {
+    whiteSpace:'normal!important'
+  }
 });
 
-
+//main component
 class TicketList extends Component {
   componentDidMount(){
-    this.props.loadRequest();
-    console.log(this.props.user.email)
-    console.log('http://helpdesk.dev/api/tickets?pos='+this.props.position+'&em='+this.props.user.email);
+    this.props.loadRequest(); //set the loading flag
+    //fetch all tickets
     fetch('http://helpdesk.dev/api/tickets?pos='+this.props.position+'&em='+this.props.user.email, {
       method: 'GET'
     }).then(response=>response.json())
     .then(responseJson=>{
       if(responseJson.status === 'OK'){
-        this.props.populateTickets(responseJson.body.tickets);
+        this.props.populateTickets(responseJson.body.tickets); //set the tickets in the store
       }else{
         this.props.requestError();
       }
@@ -42,6 +57,7 @@ class TicketList extends Component {
       this.props.requestError();
     })  
 
+    //get all available technicians from firebase
     fireDB.ref('/technicians').once('value', (snapshot) => {
       const val = snapshot.val();
       if(val){
@@ -60,13 +76,14 @@ class TicketList extends Component {
     })
   }
 
+  //save a ticket's technician into database
   saveTicket = (data, ticket_index) => {
     var formData = new FormData();
     formData.append("technical_email", data.technical_email);
     formData.append("helpdesk_email", this.props.user.email);
     formData.append('escalation_level', data.escalation_level);
     formData.append('priority', data.priority);
-    this.props.setSaveLoading(true, ticket_index);
+    this.props.setSaveLoading(true, ticket_index); //set the loading flag
     fetch('http://helpdesk.dev/api/tickets/'+data.tid+'/assign', {
       method: 'POST',
       headers: {
@@ -78,15 +95,17 @@ class TicketList extends Component {
       console.log(responseJson);
       this.props.setSaveLoading(false, ticket_index);
       if(responseJson.status === 'OK'){
-        this.props.setStatic(true, ticket_index);
+        this.props.setStatic(true, ticket_index); //set the static flag if request is successful
       }
     }).catch(err=>{
+      //catch the error
       this.props.setSaveLoading(false, ticket_index);
       console.log(err)
       this.props.requestError();
     })  
   }
 
+  //render the tecnicians select box
   renderTechniciansOptions(data, classes, ticket_index){
     return (
       <form className={classes.container} autoComplete="off">
@@ -111,6 +130,7 @@ class TicketList extends Component {
     )
   }
 
+  //render priority select box
   renderPriorityOptions(data, classes, ticket_index){
     return (
       <form className={classes.container} autoComplete="off">
@@ -135,6 +155,7 @@ class TicketList extends Component {
     )
   }
 
+  //render escalation level select box
   renderEscalationLevelOptions(data, classes, ticket_index){
     return (
       <form className={classes.container} autoComplete="off">
@@ -159,6 +180,7 @@ class TicketList extends Component {
     )
   }
 
+  //map technician email to name
   getTechnicalName(email){
     for(var i = 0; i < this.props.technicians.length; i++){
       var item = this.props.technicians[i];
@@ -169,10 +191,12 @@ class TicketList extends Component {
     return "";
   }
 
+  //render the priority title
   renderPriority(priority){
     return this.toTitleCase(priority);
   }
 
+  //helper method to title case
   toTitleCase(str)
   {
     if(str == null){
@@ -181,13 +205,14 @@ class TicketList extends Component {
       return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
   }
 
+  //render the table rows for displaying tickets
   renderTable(item, classes, ticket_index){
     return (
       <TableRow key={item.tid}>
         <TableCell><Link to={`/app/tickets/${item.tid}`}>{item.ticket_id}</Link></TableCell>
         <TableCell><span>{item.first_name + ' ' + item.last_name}</span></TableCell>
         <TableCell><span>{item.email}</span></TableCell>
-        <TableCell><span>{item.software_issue}</span></TableCell>
+        <TableCell classes={{root:classes.descCell}}><span>{item.software_issue}</span></TableCell>
         <TableCell><span>{item.statuses[0].status || 'Pending'}</span></TableCell>
         <TableCell>{item.static || this.props.position == 'technician' ? this.getTechnicalName(item.technical_email) : this.renderTechniciansOptions(item, classes, ticket_index)}</TableCell>
         <TableCell>{item.static || this.props.position == 'technician' ? this.renderPriority(item.priority) : this.renderPriorityOptions(item, classes, ticket_index)}</TableCell>
@@ -203,32 +228,38 @@ class TicketList extends Component {
     )
   }
 
+  //main render method
   render() {
     const classes = this.props.classes;
     return (
       <div className="App">
         {this.props.loading ? 
           <CircularProgress size={50} /> :
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Subject</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Assigned To</TableCell>
-                <TableCell>Priority</TableCell>
-                <TableCell>Escalation Level</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {this.props.tickets.map((data,index)=>{
-                return this.renderTable(data, classes, index)
-              })}
-            </TableBody>
-          </Table>
+          <Grid container>
+            <Grid item xs={12}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ID</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Subject</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Assigned To</TableCell>
+                    <TableCell>Priority</TableCell>
+                    <TableCell>Escalation Level</TableCell>
+                    <TableCell>Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.props.tickets.map((data,index)=>{
+                    return this.renderTable(data, classes, index)
+                  })}
+                </TableBody>
+              </Table>
+            </Grid>
+          </Grid>
+          
         }
       </div>
     );

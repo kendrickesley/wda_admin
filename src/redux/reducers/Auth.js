@@ -1,6 +1,6 @@
 var default_state = {
-    user: null,
-    position: null
+    user: null, //authenticated user object
+    position: null //authenticated user's position
 }
 export default (state = default_state, action) => {
     switch(action.type){

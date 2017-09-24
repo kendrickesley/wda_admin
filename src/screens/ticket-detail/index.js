@@ -1,9 +1,18 @@
+//react-router & react-redux components
 import { connect } from 'react-redux'
-import TicketDetail from './TicketDetail'
-import {ticketDetail} from '../../redux/actions'
 import { goBack } from 'react-router-redux'
+
+//WSYWYG Editor Components
 import draftToHtml from 'draftjs-to-html';
 import { convertToRaw } from 'draft-js';
+
+//Custom components
+import TicketDetail from './TicketDetail'
+import {ticketDetail} from '../../redux/actions'
+
+
+
+//All variables which will be passed to props
 const mapStateToProps = (state, ownProps) => {
   return {
     ...state.ticketDetail,
@@ -11,6 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 }
 
+//All methods which will be passed to props
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loadRequest: () => {
@@ -23,7 +33,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(ticketDetail.setTechnicians(array))
     },
     setTicket: (ticket) => { 
-      console.log(ticket)
       dispatch(ticketDetail.setTicket(ticket))
     },
     requestError: (error = true) => {
@@ -67,6 +76,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
+//Create TicketDetail which is connected with redux
 const TicketDetailScreen = connect(
   mapStateToProps,
   mapDispatchToProps

@@ -1,3 +1,4 @@
+//CURRENTLY NOT IN USE
 import { connect } from 'react-redux'
 import Home from './Home'
 const mapStateToProps = (state, ownProps) => {

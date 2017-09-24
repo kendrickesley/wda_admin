@@ -1,27 +1,39 @@
 import React, { Component } from 'react';
+
+//Material UI Helper
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
+import classNames from 'classnames';
+
+//Material UI Components
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
-import classNames from 'classnames';
 import Drawer from 'material-ui/Drawer';
 import Divider from 'material-ui/Divider';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 /* START: ICONS */
 import MenuIcon from 'material-ui-icons/Menu';
 import ChevronLeftIcon from 'material-ui-icons/ChevronLeft';
 import HomeIcon from 'material-ui-icons/Home';
 import ViewListIcon from 'material-ui-icons/ViewList';
 /* END: ICONS */
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+
+//react redux's router components
 import { Route, Switch, Redirect } from 'react-router'
+import { push, replace } from 'react-router-redux'
+
+//Custom screens
 import HomeScreen from '../../screens/home';
 import TicketListScreen from '../../screens/ticket-list';
 import TicketDetailScreen from '../../screens/ticket-detail';
-import { push, replace } from 'react-router-redux'
+
+//application routes
 import {ticketList as ticketListRoute, home as homeRoute, ticketDetail as ticketDetailRoute} from '../../routes';
+
+//Styles for the component
 const drawerWidth = 240;
 const styles = theme => ({
   root: {
@@ -100,6 +112,7 @@ const styles = theme => ({
   },
   content: {
     width: '100%',
+    maxWidth: '100%',
     flexGrow: 1,
     backgroundColor: theme.palette.background.white,
     padding: 24,
@@ -118,19 +131,26 @@ const styles = theme => ({
   }
 });
 
+
+//Main component
 class NavBar extends Component {
+
+  //this will determine if the navbar is open or closed
   state = {
     open: false,
   };
 
+  //callback when the drawer is requested to be opened
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };
 
+  //calback when the drawer is requested to be closed
   handleDrawerClose = () => {
     this.setState({ open: false });
   };
 
+  //The navigation items' list
   generateListItem = (route, name, icon, isHome = false) => {
     const Icon = icon;
     const { classes } = this.props;
@@ -165,6 +185,7 @@ class NavBar extends Component {
     )
   }
 
+  //check if user is logged in
   checkAuth = ()=>{
     if(this.props.user == null){
       return false;
@@ -172,6 +193,7 @@ class NavBar extends Component {
     return true;
   }
 
+  //Render the navigation bar
   render(){
     const { classes } = this.props;
     return(
@@ -247,6 +269,7 @@ class NavBar extends Component {
     );
   }
 }
+//declare requirement for the component
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };

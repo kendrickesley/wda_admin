@@ -1,3 +1,4 @@
+//The application routes
 const login = '/';
 const home = '/app';
 const ticketList = '/app/tickets'

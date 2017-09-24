@@ -1,9 +1,9 @@
 var default_state = {
-    tickets: [],
-    success: false,
-    loading: false,
-    technicians: [],
-    static: false
+    tickets: [], //all available tickets
+    success: false, //success flag
+    loading: false, //loading flag
+    technicians: [], //all available technicians
+    static: false //static flag
 }
 export default (state = default_state, action) => {
     switch(action.type){

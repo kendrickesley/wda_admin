@@ -1,3 +1,4 @@
+//firebase's config
 var config = {
     apiKey: "AIzaSyB8WzoLI36zM1GJxCx0JAplVKPEzjYmoso",
     authDomain: "wda-admin.firebaseapp.com",
