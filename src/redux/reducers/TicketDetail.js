@@ -160,6 +160,22 @@ export default (state = default_state, action) => {
                 ...state,
                 request_technician_error: action.request_technician_error
             }
+        case 'SET_TICKET_TECHNICIAN':
+            return {
+                ...state,
+                ticket: {
+                    ...state.ticket,
+                    technical_email: action.technical_email
+                }
+            }
+        case 'SET_TICKET_ESCALATION_LEVEL':
+            return {
+                ...state,
+                ticket: {
+                    ...state.ticket,
+                    escalation_level: action.escalation_level
+                }
+            }
         default:
             return state
     }

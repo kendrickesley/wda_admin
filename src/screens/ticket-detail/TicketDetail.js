@@ -191,13 +191,38 @@ class TicketDetail extends Component {
       })  
     }
 
+    //change technician
     submitTechnician(){
       var formData = new FormData();
-      formData.append("helpdesk_email", this.props.user.email);
       formData.append("technical_email", this.props.technician_form.technical_email);
       formData.append("escalation_level", this.props.technician_form.escalation_level);
       this.props.setTechnicianSaveLoading(true); //set loading to true, set it to false after response is complete
-    
+      fetch('http://helpdesk.dev/api/tickets/'+this.props.ticket.tid+'/tech/assign', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: formData
+      }).then(response=>response.json())
+      .then(responseJson=>{
+        console.log(responseJson);
+        this.props.setTechnicianSaveLoading(false);
+        if(responseJson.status === 'OK'){
+          const {history, escalation_level, technical_email} = responseJson.body;
+          console.log(history, escalation_level, technical_email);
+          this.props.pushTechnicianHistory(history);
+          this.props.setTicketTechnician(technical_email);
+          this.props.setTicketEscalationLevel(escalation_level);
+          this.props.requestTechnicianError(false);
+        }else{
+          this.props.requestTechnicianError(true);
+        }
+      }).catch(err=>{
+        //catch the error
+        this.props.setTechnicianSaveLoading(false);
+        console.log(err)
+        this.props.requestTechnicianError(true);
+      })  
     }
 
     //Render an error message if ticket cannot be acquired
@@ -302,6 +327,7 @@ class TicketDetail extends Component {
     renderAdmin(admin){
       const {technical_email, helpdesk_email, priority, escalation_level} = admin;
       return (
+        <div key={'admin-history-' + admin.ahid}>
         <Grid container spacing={24}>
           <Grid item xs={12} md={6}>
             <Typography type="title" gutterBottom>
@@ -340,6 +366,8 @@ class TicketDetail extends Component {
             </Typography>
           </Grid>
         </Grid>
+        <Divider className={this.props.classes.divider}/>
+        </div>
       )
     }
 
@@ -348,7 +376,7 @@ class TicketDetail extends Component {
       const {admins} = this.props.ticket;
       return (
         <div>
-          <Typography type="title" gutterBottom>
+          <Typography type="display1" gutterBottom>
           Admin History
           </Typography>
           {admins && admins.length > 0 ? 
@@ -356,7 +384,6 @@ class TicketDetail extends Component {
               {admins.map(obj=>(
                 this.renderAdmin(obj)
               ))}
-              <Divider className={this.props.classes.divider}/>
             </div>
             :
             <div>

@@ -35,6 +35,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setTicket: (ticket) => { 
       dispatch(ticketDetail.setTicket(ticket))
     },
+    setTicketTechnician: (technical_email) => {
+      dispatch(ticketDetail.setTicketTechnician(technical_email))
+    },
+    setTicketEscalationLevel: (escalation_level) => {
+      dispatch(ticketDetail.setTicketEscalationLevel(escalation_level))
+    },
     requestError: (error = true) => {
       dispatch(ticketDetail.requestError(error));
       dispatch(ticketDetail.setLoading(false))

@@ -131,6 +131,16 @@ const setTechnicianEscalationLevel = (escalation_level) => ({
     escalation_level
 })
 
+const setTicketTechnician = (technical_email) => ({
+    type: 'SET_TICKET_TECHNICIAN',
+    technical_email
+})
+
+const setTicketEscalationLevel = (escalation_level) => ({
+    type: 'SET_TICKET_ESCALATION_LEVEL',
+    escalation_level
+})
+
 export default {
     setTicketID,
     setTicket,
@@ -153,5 +163,7 @@ export default {
     pushTechnicianHistory,
     requestTechnicianError,
     setTechnicianEmail,
-    setTechnicianEscalationLevel
+    setTechnicianEscalationLevel,
+    setTicketTechnician,
+    setTicketEscalationLevel
 }
